@@ -50,11 +50,11 @@ class LJSpeechDataset(torch.utils.data.Dataset):
         frames_per_seg = math.ceil(self._max_len / MelSpectrogramConfig.hop_length)
 
         if audio_wav.size(1) >= self._max_len:
-            mel_start = random.randint(0, mel_spec.size(2) - frames_per_seg - 1)
-            mel = mel_spec[:, :, mel_start:mel_start + frames_per_seg]
+            mel_start = random.randint(0, mel_spec.size(1) - frames_per_seg - 1)
+            mel = mel_spec[:,  mel_start:mel_start + frames_per_seg]
             audio = audio_wav[:, mel_start * MelSpectrogramConfig.hop_length:(mel_start + frames_per_seg) * MelSpectrogramConfig.hop_length]
         else:
-            mel = torch.nn.functional.pad(mel_spec, (0, frames_per_seg - mel_spec.size(2)), 'constant')
+            mel = torch.nn.functional.pad(mel_spec, (0, frames_per_seg - mel_spec.size(1)), 'constant')
             audio = torch.nn.functional.pad(audio_wav, (0, self._max_len - audio_wav.size(1)), 'constant')
 
         return audio, mel
