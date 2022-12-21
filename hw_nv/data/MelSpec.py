@@ -62,7 +62,7 @@ class MelSpectrogram(nn.Module):
         :return: Shape is [B, n_mels, T']
         """
 
-        mel = self.mel_spectrogram(audio) \
+        mel = self.mel_spectrogram(audio.squeeze(1)) \
             .clamp_(min=1e-5) \
             .log_()
 

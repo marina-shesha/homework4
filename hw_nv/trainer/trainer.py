@@ -8,7 +8,7 @@ import os
 import torchaudio
 from ..data.MelSpec import MelSpectrogram
 
-dir_wavs = "wavs"
+dir_wavs = "homework4/wavs"
 
 class Trainer(BaseTrainer):
     """
@@ -89,7 +89,7 @@ class Trainer(BaseTrainer):
                     )
                 )
                 self.writer.add_scalar(
-                    {"learning rate 1"  : self.lr_scheduler['lr_scheduler_g'].get_last_lr()[0]}
+                    "learning rate 1", self.lr_scheduler['lr_scheduler_g'].get_last_lr()[0]
                 )
                 self._log_scalars(self.train_metrics)
                     # we don't want to reset train metrics at the start of every epoch
@@ -98,7 +98,8 @@ class Trainer(BaseTrainer):
                 self.train_metrics.reset()
                 if batch_idx >= self.len_epoch:
                     break
-                batch_idx += 1
+            batch_idx += 1
+            break
         self.lr_scheduler['lr_scheduler_g'].step()
         self.lr_scheduler['lr_scheduler_d'].step()
 
@@ -114,12 +115,14 @@ class Trainer(BaseTrainer):
         def get_data_and_log(filename, num):
             wav, sr = torchaudio.load(filename)
             self._log_audio(f'true_{num}', wav, sr)
+            wav = wav.unsqueeze(0)
             mel = melspec(wav)
-
+            print("mel", mel.shape)
+            print("true", wav.shape)
             with torch.no_grad():
                 fake_wav = self.model(mel.to(self.device)).cpu()
-
-                self._log_audio(f'fake_{num}', fake_wav, sr)
+                print("fake", fake_wav.shape)
+                self._log_audio(f'fake_{num}', fake_wav.squeeze(0), sr)
         dir = dir_wavs
         for i, name in enumerate(os.listdir(dir)):
             filename = os.path.join(dir, name)
