@@ -67,11 +67,9 @@ class MultiPeriodDiscriminator(nn.Module):
         fake_outs = []
         true_feats = []
         fake_feats = []
-        true_out = true_input
-        fake_out = fake_input
         for layer in self.p_discrs:
-            true_out, true_feat = layer(true_out)
-            fake_out, fake_feat = layer(fake_out)
+            true_out, true_feat = layer(true_input)
+            fake_out, fake_feat = layer(fake_input)
             true_outs.append(true_out)
             fake_outs.append(fake_out)
             true_feats.append(true_feat)
@@ -84,7 +82,7 @@ class ScaledDiscriminator(nn.Module):
         super().__init__()
         self.convs = nn.ModuleList([
             nn.Sequential(
-                norm(nn.Conv1d(1, 128, 15,  1, padding= 7)),
+                norm(nn.Conv1d(1, 128, 15,  1, padding=7)),
                 nn.LeakyReLU(0.1)
             ),
             nn.Sequential(
@@ -143,19 +141,17 @@ class MultiScaledDiscriminator(nn.Module):
         fake_outs = []
         true_feats = []
         fake_feats = []
-        true_out = true_input
-        fake_out = fake_input
         i = 0
         for layer in self.s_discrs:
-            true_out, true_feat = layer(true_out)
-            fake_out, fake_feat = layer(fake_out)
+            true_out, true_feat = layer(true_input)
+            fake_out, fake_feat = layer(fake_input)
             true_outs.append(true_out)
             fake_outs.append(fake_out)
             true_feats.append(true_feat)
             fake_feats.append(fake_feat)
             if i < len(self.polling):
-                true_out = self.polling[i](true_out)
-                fake_out = self.polling[i](fake_out)
+                true_input = self.polling[i](true_input)
+                fake_input = self.polling[i](fake_input)
             i += 1
 
         return true_outs, fake_outs, true_feats, fake_feats
