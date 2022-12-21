@@ -10,7 +10,7 @@ class PeriodDiscriminator(nn.Module):
         ks = 5
         stride = 3
         self.p = period
-        padding = padding = int((5 - 1) / 2)
+        padding = int((5 - 1) / 2)
         self.convs = nn.ModuleList([
             nn.Sequential(
                 weight_norm(nn.Conv2d(1, 32, (ks, 1), (stride, 1), padding=(padding, 0))),
