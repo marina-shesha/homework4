@@ -62,8 +62,8 @@ class Generator(nn.Module):
                     weight_norm(nn.ConvTranspose1d(ch, ch // 2, ks, st, padding=(ks-st)//2))
                 )
             )
-            for ks, d in zip(config.blok_kernel_size, config.blok_dilation):
-                self.res_block.append(GenBlock(ch//2, ks, d))
+            for k, d in zip(config.blok_kernel_size, config.blok_dilation):
+                self.res_block.append(GenBlock(ch//2, k, d))
             ch = ch // 2
 
         self.conv2 = weight_norm(nn.Conv1d(ch, 1, 7, 1, padding=3))
