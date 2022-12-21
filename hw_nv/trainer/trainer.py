@@ -117,11 +117,8 @@ class Trainer(BaseTrainer):
             self._log_audio(f'true_{num}', wav, sr)
             wav = wav.unsqueeze(0)
             mel = melspec(wav)
-            print("mel", mel.shape)
-            print("true", wav.shape)
             with torch.no_grad():
                 fake_wav = self.model(mel.to(self.device)).cpu()
-                print("fake", fake_wav.shape)
                 self._log_audio(f'fake_{num}', fake_wav.squeeze(0), sr)
         dir = dir_wavs
         for i, name in enumerate(os.listdir(dir)):
