@@ -25,7 +25,7 @@ class MelSpectrogramConfig:
 
 class MelSpectrogram(nn.Module):
 
-    def __init__(self, config: MelSpectrogramConfig):
+    def __init__(self, config: MelSpectrogramConfig = MelSpectrogramConfig):
         super(MelSpectrogram, self).__init__()
 
         self.config = config
