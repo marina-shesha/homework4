@@ -65,18 +65,18 @@ class MultiPeriodDiscriminator(nn.Module):
     def forward(self, true_input, fake_input):
         true_outs = []
         fake_outs = []
-        true_feat_maps = []
-        fake_feat_maps = []
+        true_feats = []
+        fake_feats = []
         true_out = true_input
         fake_out = fake_input
         for layer in self.p_discrs:
-            true_out, true_feat_map = layer(true_out)
-            fake_out, fake_feat_map = layer(fake_out)
+            true_out, true_feat = layer(true_out)
+            fake_out, fake_feat = layer(fake_out)
             true_outs.append(true_out)
             fake_outs.append(fake_out)
-            true_feat_maps.append(true_feat_map)
-            fake_feat_maps.append(fake_feat_map)
-        return true_outs, fake_outs, true_feat_maps, fake_feat_maps
+            true_feats.append(true_feat)
+            fake_feats.append(fake_feat)
+        return true_outs, fake_outs, true_feats, fake_feats
 
 
 class ScaledDiscriminator(nn.Module):
@@ -141,23 +141,23 @@ class MultiScaledDiscriminator(nn.Module):
     def forward(self, true_input, fake_input):
         true_outs = []
         fake_outs = []
-        true_feat_maps = []
-        fake_feat_maps = []
+        true_feats = []
+        fake_feats = []
         true_out = true_input
         fake_out = fake_input
         i = 0
         for layer in self.s_discrs:
-            true_out, true_feat_map = layer(true_out)
-            fake_out, fake_feat_map = layer(fake_out)
+            true_out, true_feat = layer(true_out)
+            fake_out, fake_feat = layer(fake_out)
             true_outs.append(true_out)
             fake_outs.append(fake_out)
-            true_feat_maps.append(true_feat_map)
-            fake_feat_maps.append(fake_feat_map)
+            true_feats.append(true_feat)
+            fake_feats.append(fake_feat)
             if i < len(self.polling):
                 true_out = self.polling[i](true_out)
                 fake_out = self.polling[i](fake_out)
             i += 1
 
-        return true_outs, fake_outs, true_feat_maps, fake_feat_maps
+        return true_outs, fake_outs, true_feats, fake_feats
 
 

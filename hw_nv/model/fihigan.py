@@ -43,10 +43,10 @@ class HiFiGAN(nn.Module):
     def discriminator_step(self, optimizer_d, true_melspec, true_wav, fake_wav):
         optimizer_d.zero_grad()
 
-        true_outs, fake_outs, true_feat_maps, fake_feat_maps = self.mpd(true_wav, fake_wav.detach())
+        true_outs, fake_outs, true_feats, fake_feats = self.mpd(true_wav, fake_wav.detach())
         mpd_loss = discriminator_loss(true_outs, fake_outs)
 
-        true_outs, fake_outs, true_feat_maps, fake_feat_maps = self.msd(true_wav, fake_wav.detach())
+        true_outs, fake_outs, true_feats, fake_feats = self.msd(true_wav, fake_wav.detach())
         msd_loss = discriminator_loss(true_outs, fake_outs)
 
         loss = mpd_loss + msd_loss
@@ -64,12 +64,12 @@ class HiFiGAN(nn.Module):
 
         mel_loss = F.l1_loss(true_mel, fake_mel) * 45
 
-        true_outs, fake_outs, true_feat_maps, fake_feat_maps = self.mpd(true_wav, fake_wav)
-        mpd_feat_loss = feat_loss(true_feat_maps, fake_feat_maps)
+        true_outs, fake_outs, true_feats, fake_feats = self.mpd(true_wav, fake_wav)
+        mpd_feat_loss = feat_loss(true_feats, fake_feats)
         mpd_gen_loss = generator_loss(fake_outs)
 
-        true_outs, fake_outs, true_feat_maps, fake_feat_maps = self.msd(true_wav, fake_wav)
-        msd_feat_loss = feat_loss(true_feat_maps, fake_feat_maps)
+        true_outs, fake_outs, true_feats, fake_feats = self.msd(true_wav, fake_wav)
+        msd_feat_loss = feat_loss(true_feats, fake_feats)
         msd_gen_loss = generator_loss(fake_outs)
 
         loss = mpd_feat_loss + mpd_gen_loss + msd_feat_loss + msd_gen_loss + mel_loss
