@@ -30,7 +30,7 @@ class HiFiGAN(nn.Module):
         return self.g_model(input)
 
     def optimizer_step(self, batch, optimizer_g, optimizer_d):
-        true_mel= batch['melspec']
+        true_mel = batch['spectrogram']
         true_wav = batch['audio']
 
         fake_wav = self.g_model(true_mel)
