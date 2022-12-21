@@ -107,7 +107,7 @@ class ScaledDiscriminator(nn.Module):
                 norm(nn.Conv1d(1024, 1024, 41, 1, groups=16, padding=20)),
                 nn.LeakyReLU(0.1)
             ),
-            nn.Sequentia(
+            nn.Sequential(
                 norm(nn.Conv1d(1024, 1024, 5, 1, padding=2)),
                 nn.LeakyReLU(0.1)
             ),
