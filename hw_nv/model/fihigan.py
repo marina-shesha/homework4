@@ -31,7 +31,7 @@ class HiFiGAN(nn.Module):
 
     def optimizer_step(self, batch, optimizer_g, optimizer_d):
         true_mel = batch['spectrogram'].squeeze()
-        true_wav = batch['audio']
+        true_wav = batch['audio'].unsqueeze(1)
 
         fake_wav = self.g_model(true_mel)
 
