@@ -9,9 +9,9 @@ import torch.nn.functional as F
 
 
 class ModelConfig:
-    kernel_size_convT: List[int] = [16, 16, 4, 4],
-    stride_convT: List[int] = [8, 8, 2, 2],
-    blok_kernel_size:  List[int] = [3, 7, 11],
+    kernel_size_convT: List[int] = [16, 16, 4, 4]
+    stride_convT: List[int] = [8, 8, 2, 2]
+    blok_kernel_size:  List[int] = [3, 7, 11]
     blok_dilation: List[List[int]] = [[1, 3, 5], [1, 3, 5], [1, 3, 5]]
     channels_up: int = 128
 
