@@ -32,7 +32,7 @@ class Trainer(BaseTrainer):
         self.train_dataloader = data_loader
         if len_epoch is None:
             # epoch-based training
-            self.len_epoch = len(self.train_dataloader) * data_loader.batch_expand_size
+            self.len_epoch = len(self.train_dataloader)
         else:
             # iteration-based training
             self.train_dataloader = inf_loop(self.train_dataloader)
@@ -96,9 +96,9 @@ class Trainer(BaseTrainer):
                     # because we are interested in recent train metrics
                 last_train_metrics = self.train_metrics.result()
                 self.train_metrics.reset()
-
-            if batch_idx >= self.len_epoch:
-                break
+                if batch_idx >= self.len_epoch:
+                    break
+                batch_idx += 1
         self.lr_scheduler['lr_scheduler_g'].step()
         self.lr_scheduler['lr_scheduler_d'].step()
 
