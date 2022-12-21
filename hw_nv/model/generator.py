@@ -66,8 +66,7 @@ class Generator(nn.Module):
                 )
             )
             for ks, d in zip(config.blok_kernel_size, config.blok_dilation):
-
-                self.res_bloks.append(GenBlock(ch//2, ks, d))
+                self.res_block.append(GenBlock(ch//2, ks, d))
             ch = ch // 2
 
         self.conv2 = weight_norm(nn.Conv1d(ch, 1, 7, 1, padding=3))
