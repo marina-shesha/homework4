@@ -14,7 +14,7 @@
         }
     },
     "dataloader": {
-        "type": "Dataloader",
+        "type": "DataLoader",
         "args":{
             "batch_size": 16,
             "shuffle": true,
