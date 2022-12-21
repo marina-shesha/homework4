@@ -38,7 +38,7 @@ class LJSpeechDataset(torch.utils.data.Dataset):
         data_dict = self._index[ind]
         audio_path = data_dict["path"]
         audio_wav = self.load_audio(audio_path)
-        mel_spec = self.mel_spec(audio_wav.unqueeze(0)).squeeze(0)
+        mel_spec = self.mel_spec(audio_wav.unsqueeze(0)).squeeze(0)
         audio_wav, mel_spec = self._prepare_wav_and_spec(audio_wav, mel_spec)
         return {
             "audio": audio_wav,
