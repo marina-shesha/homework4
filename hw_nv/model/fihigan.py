@@ -17,7 +17,7 @@ class ModelConfig:
 
 
 class HiFiGAN(nn.Module):
-    def __init__(self, config = ModelConfig()):
+    def __init__(self, config=ModelConfig()):
         super().__init__()
 
         self.g_model = Generator(config)

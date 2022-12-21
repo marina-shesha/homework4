@@ -56,12 +56,12 @@ class Generator(nn.Module):
         super().__init__()
         ch = config.channels_up
         self.conv1 = weight_norm(nn.Conv1d(80, ch, 7, 1, padding=3))
-        convT = []
-        for ks, stride in zip(config.kernel_size_convT, config.stride_convT):
-            convT.append(
+        self.convT = nn.ModuleList()
+        for ks, st in zip(config.kernel_size_convT, config.stride_convT):
+            self.convT.append(
                 nn.Sequential(
                     nn.LeakyReLU(0.1),
-                    weight_norm(nn.ConvTranspose1d(ch, ch // 2, ks, stride, padding=(ks-stride)//2))
+                    weight_norm(nn.ConvTranspose1d(ch, ch // 2, ks, st, padding=(ks-st)//2))
                 )
             )
             ch = ch//2
@@ -71,7 +71,6 @@ class Generator(nn.Module):
             ch = ch // 2
             res_bloks.append(GenBlock(ch, ks, d))
         self.conv2 = weight_norm(nn.Conv1d(ch, 1, 7, 1, padding=3))
-        self.convT = nn.ModuleList(convT)
         self.res_block = nn.ModuleList(res_bloks)
 
         self.conv1.apply(init_weights)
