@@ -28,7 +28,7 @@ def main(config):
 
     # setup data_loader instances
     dataset = config.init_obj(config["dataset"], data)
-    dataloader = config.init_obj(config["dataloader"], data, dataset=dataset)
+    dataloader = config.init_obj(config["dataloader"],  torch.utils.data, dataset=dataset)
 
     # build model architecture, then print to console
     model = config.init_obj(config["arch"], module_arch)
