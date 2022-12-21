@@ -13,23 +13,23 @@ class PeriodDiscriminator(nn.Module):
         padding = padding = int((5 - 1)/2)
         self.convs = nn.ModuleList([
             nn.Sequential(
-                weight_norm(nn.Conv2d(1, 64, (ks, 1), (stride, 1), padding=(padding, 0))),
+                weight_norm(nn.Conv2d(1, 32, (ks, 1), (stride, 1), padding=(padding, 0))),
                 nn.LeakyReLU(0.1)
             ),
             nn.Sequential(
-                weight_norm(nn.Conv2d(64, 128, (ks, 1), (stride, 1), padding=(padding, 0))),
+                weight_norm(nn.Conv2d(32, 128, (ks, 1), (stride, 1), padding=(padding, 0))),
                 nn.LeakyReLU(0.1)
             ),
             nn.Sequential(
-                weight_norm(nn.Conv2d(128, 256, (ks, 1), (stride, 1), padding=(padding, 0))),
+                weight_norm(nn.Conv2d(128, 512, (ks, 1), (stride, 1), padding=(padding, 0))),
                 nn.LeakyReLU(0.1)
             ),
             nn.Sequential(
-                weight_norm(nn.Conv2d(256, 512, (ks, 1), (stride, 1), padding=(padding, 0))),
+                weight_norm(nn.Conv2d(512, 1024, (ks, 1), (stride, 1), padding=(padding, 0))),
                 nn.LeakyReLU(0.1)
             ),
             nn.Sequential(
-                weight_norm(nn.Conv2d(512, 1024, (ks, 1), 1, padding=(2, 0))),
+                weight_norm(nn.Conv2d(1024, 1024, (ks, 1), 1, padding=(2, 0))),
                 nn.LeakyReLU(0.1)
             )
         ])
@@ -47,7 +47,7 @@ class PeriodDiscriminator(nn.Module):
         for layer in self.convs:
             out = layer(out)
             feat.append(out)
-        out = torch.flatten(out, 1, -1)
+        out = torch.flatten(out, start_dim=1)
         return out, feat
 
 
@@ -120,7 +120,7 @@ class ScaledDiscriminator(nn.Module):
         for layer in self.convs:
             out = layer(out)
             feat.append(out)
-        out = torch.flatten(out, 1, -1)
+        out = torch.flatten(out, start_dim=1)
         return out, feat
 
 

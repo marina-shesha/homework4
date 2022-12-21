@@ -7,29 +7,25 @@ from torch.nn.utils import weight_norm
 class GenBlock(nn.Module):
     def __init__(self, channels, kernel_size, dilation):
         super().__init__()
-        convs1 = []
+        self.convs1 = nn.ModuleList()
         for i in range(len(dilation)):
-            convs1.append(
-                nn.LeakyReLU(0.1)
-            )
-            padding = int((kernel_size * dilation[i] - dilation[i])/2)
-            convs1.append(
+            padding = int((kernel_size * dilation[i] - dilation[i]) / 2)
+            self.convs1.append(nn.Sequential(
+                nn.LeakyReLU(0.1),
                 weight_norm(nn.Conv1d(
-                    channels,
-                    channels,
-                    kernel_size,
-                    1,
-                    dilation=dilation[i],
-                    padding=padding
+                        channels,
+                        channels,
+                        kernel_size,
+                        1,
+                        dilation=dilation[i],
+                        padding=padding
                 ))
-            )
-        convs2 = []
+            ))
+        self.convs2 = nn.ModuleList()
         for i in range(len(dilation)):
-            convs2.append(
-                nn.LeakyReLU(0.1)
-            )
-            padding = int((kernel_size * dilation[i] - 1) / 2)
-            convs2.append(
+            padding = int((kernel_size - 1) / 2)
+            self.convs2.append(nn.Sequential(
+                nn.LeakyReLU(0.1),
                 weight_norm(nn.Conv1d(
                     channels,
                     channels,
@@ -38,17 +34,17 @@ class GenBlock(nn.Module):
                     dilation=1,
                     padding=padding
                 ))
-            )
-        self.convs1 = nn.ModuleList(convs1)
-        self.convs2 = nn.ModuleList(convs2)
+            ))
+
         self.convs1.apply(init_weights)
         self.convs2.apply(init_weights)
 
     def forward(self, input):
-        out = self.convs1(input)
-        out = self.convs2(out)
-        out += input
-        return out
+        for c1, c2 in zip(self.convs1, self.convs2):
+            out = c1(input)
+            out = c2(out)
+            input += out
+        return input
 
 
 class Generator(nn.Module):
@@ -58,6 +54,7 @@ class Generator(nn.Module):
         self.conv1 = weight_norm(nn.Conv1d(80, ch, 7, 1, padding=3))
         self.convT = nn.ModuleList()
         self.res_block = nn.ModuleList()
+        self.l = len(config.blok_kernel_size)
         for ks, st in zip(config.kernel_size_convT, config.stride_convT):
             self.convT.append(
                 nn.Sequential(
@@ -81,13 +78,12 @@ class Generator(nn.Module):
         for layer in self.convT:
             out = layer(out)
             block_out = None
-            l = len(self.convT)
-            for j in range(l):
+            for j in range(self.l):
                 if block_out is None:
-                    block_out = self.res_block[i*l + j](out)
+                    block_out = self.res_block[i*self.l + j](out)
                 else:
-                    block_out += self.res_block[i*l + j](out)
-            out = block_out / l
+                    block_out += self.res_block[i*self.l + j](out)
+            out = block_out / self.l
             i += 1
         out = F.leaky_relu(out, 0.1)
         out = self.conv2(out)
