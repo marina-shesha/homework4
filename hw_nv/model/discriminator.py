@@ -12,23 +12,23 @@ class PeriodDiscriminator(nn.Module):
         self.p = period
         padding = padding = int((5 - 1)/2)
         self.convs = nn.ModuleList([
-            nn.Sequentia(
+            nn.Sequential(
                 weight_norm(nn.Conv2d(1, 64, (ks, 1), (stride, 1), padding=(padding, 0))),
                 nn.LeakyReLU(0.1)
             ),
-            nn.Sequentia(
+            nn.Sequential(
                 weight_norm(nn.Conv2d(64, 128, (ks, 1), (stride, 1), padding=(padding, 0))),
                 nn.LeakyReLU(0.1)
             ),
-            nn.Sequentia(
+            nn.Sequential(
                 weight_norm(nn.Conv2d(128, 256, (ks, 1), (stride, 1), padding=(padding, 0))),
                 nn.LeakyReLU(0.1)
             ),
-            nn.Sequentia(
+            nn.Sequential(
                 weight_norm(nn.Conv2d(256, 512, (ks, 1), (stride, 1), padding=(padding, 0))),
                 nn.LeakyReLU(0.1)
             ),
-            nn.Sequentia(
+            nn.Sequential(
                 weight_norm(nn.Conv2d(512, 1024, (ks, 1), 1, padding=(2, 0))),
                 nn.LeakyReLU(0.1)
             )
@@ -43,12 +43,12 @@ class PeriodDiscriminator(nn.Module):
             out = F.pad(out, (0, pad), "reflect")
         out = out.view(batch, channel, -1, self.p)
 
-        feat_map = []
+        feat = []
         for layer in self.convs:
             out = layer(out)
-            feat_map.append(out)
+            feat.append(out)
         out = torch.flatten(out, 1, -1)
-        return out, feat_map
+        return out, feat
 
 
 class MultiPeriodDiscriminator(nn.Module):
@@ -83,27 +83,27 @@ class ScaledDiscriminator(nn.Module):
     def __init__(self, norm=weight_norm):
         super().__init__()
         self.convs = nn.ModuleList([
-            nn.Sequentia(
+            nn.Sequential(
                 norm(nn.Conv1d(1, 128, 15,  1, padding= 7)),
                 nn.LeakyReLU(0.1)
             ),
-            nn.Sequentia(
+            nn.Sequential(
                 norm(nn.Conv1d(128, 128, 41, 2, groups=4, padding=20)),
                 nn.LeakyReLU(0.1)
             ),
-            nn.Sequentia(
+            nn.Sequential(
                 norm(nn.Conv1d(128, 256, 41, 2, groups=16, padding=20)),
                 nn.LeakyReLU(0.1)
             ),
-            nn.Sequentia(
+            nn.Sequential(
                 norm(nn.Conv1d(256, 512, 41, 4, groups=16, padding=20)),
                 nn.LeakyReLU(0.1)
             ),
-            nn.Sequentia(
+            nn.Sequential(
                 norm(nn.Conv1d(512, 1024, 41, 4, groups=16, padding=20)),
                 nn.LeakyReLU(0.1)
             ),
-            nn.Sequentia(
+            nn.Sequential(
                 norm(nn.Conv1d(1024, 1024, 41, 1, groups=16, padding=20)),
                 nn.LeakyReLU(0.1)
             ),
@@ -115,13 +115,13 @@ class ScaledDiscriminator(nn.Module):
         self.convs.append(weight_norm(nn.Conv2d(1024, 1, 3, 1, padding=1)))
 
     def forward(self, input):
-        feat_map = []
+        feat = []
         out = input
         for layer in self.convs:
             out = layer(out)
-            feat_map.append(out)
+            feat.append(out)
         out = torch.flatten(out, 1, -1)
-        return out, feat_map
+        return out, feat
 
 
 class MultiScaledDiscriminator(nn.Module):
