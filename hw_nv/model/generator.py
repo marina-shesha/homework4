@@ -43,7 +43,7 @@ class GenBlock(nn.Module):
         for c1, c2 in zip(self.convs1, self.convs2):
             out = c1(input)
             out = c2(out)
-            input += out
+            input = input + out
         return input
 
 
@@ -82,7 +82,7 @@ class Generator(nn.Module):
                 if block_out is None:
                     block_out = self.res_block[i*self.l + j](out)
                 else:
-                    block_out += self.res_block[i*self.l + j](out)
+                    block_out = block_out + self.res_block[i*self.l + j](out)
             out = block_out / self.l
             i += 1
         out = F.leaky_relu(out, 0.1)

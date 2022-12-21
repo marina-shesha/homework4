@@ -10,7 +10,7 @@ class PeriodDiscriminator(nn.Module):
         ks = 5
         stride = 3
         self.p = period
-        padding = padding = int((5 - 1)/2)
+        padding = padding = int((5 - 1) / 2)
         self.convs = nn.ModuleList([
             nn.Sequential(
                 weight_norm(nn.Conv2d(1, 32, (ks, 1), (stride, 1), padding=(padding, 0))),
@@ -82,7 +82,7 @@ class ScaledDiscriminator(nn.Module):
         super().__init__()
         self.convs = nn.ModuleList([
             nn.Sequential(
-                norm(nn.Conv1d(1, 128, 15,  1, padding=7)),
+                norm(nn.Conv1d(1, 128, 15, 1, padding=7)),
                 nn.LeakyReLU(0.1)
             ),
             nn.Sequential(
@@ -110,7 +110,7 @@ class ScaledDiscriminator(nn.Module):
                 nn.LeakyReLU(0.1)
             ),
         ])
-        self.convs.append(weight_norm(nn.Conv2d(1024, 1, 3, 1, padding=1)))
+        self.convs.append(weight_norm(nn.Conv1d(1024, 1, 3, 1, padding=1)))
 
     def forward(self, input):
         feat = []
@@ -143,6 +143,7 @@ class MultiScaledDiscriminator(nn.Module):
         fake_feats = []
         i = 0
         for layer in self.s_discrs:
+
             true_out, true_feat = layer(true_input)
             fake_out, fake_feat = layer(fake_input)
             true_outs.append(true_out)
