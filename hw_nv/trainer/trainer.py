@@ -99,7 +99,7 @@ class Trainer(BaseTrainer):
                 if batch_idx >= self.len_epoch:
                     break
             batch_idx += 1
-            break
+
         self.lr_scheduler['lr_scheduler_g'].step()
         self.lr_scheduler['lr_scheduler_d'].step()
 
