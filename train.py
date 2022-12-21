@@ -45,11 +45,11 @@ def main(config):
     # build optimizer, learning rate scheduler. delete every line containing lr_scheduler for
     # disabling scheduler
     g_params = filter(lambda p: p.requires_grad, model.g_model.parameters())
-    mpd_params = filter(lambda p: p.requires_grad, model.mpd.parameters())
-    msd_params = filter(lambda p: p.requires_grad, model.msd.parameters())
+    d_params = filter(lambda p: p.requires_grad, model.mpd.parameters()+model.msd.parameters())
+
     optimizer = {}
     optimizer['optimizer_g'] = config.init_obj(config["optimizer_g"], torch.optim, g_params)
-    optimizer['optimizer_d'] = config.init_obj(config["optimizer_d"], torch.optim, mpd_params + msd_params)
+    optimizer['optimizer_d'] = config.init_obj(config["optimizer_d"], torch.optim, d_params)
     lr_scheduler = {}
     lr_scheduler['lr_scheduler_g'] = config.init_obj(config["lr_scheduler_g"], torch.optim.lr_scheduler, optimizer['optimizer_g'])
     lr_scheduler['lr_scheduler_d'] = config.init_obj(config["lr_scheduler_d"], torch.optim.lr_scheduler, optimizer['optimizer_d'])
