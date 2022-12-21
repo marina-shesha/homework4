@@ -10,7 +10,7 @@ class GenBlock(nn.Module):
         convs1 = []
         for i in range(len(dilation)):
             convs1.append(
-                F.leaky_relu(0.1)
+                nn.LeakyReLU(0.1)
             )
             padding = int((kernel_size * dilation[i] - dilation[i])/2)
             convs1.append(
@@ -26,7 +26,7 @@ class GenBlock(nn.Module):
         convs2 = []
         for i in range(len(dilation)):
             convs2.append(
-                F.leaky_relu(0.1)
+                nn.LeakyReLU(0.1)
             )
             padding = int((kernel_size * dilation[i] - 1) / 2)
             convs2.append(
