@@ -74,8 +74,11 @@ class LJSpeechDataset(torch.utils.data.Dataset):
             shutil.move(str(fpath), str(self._data_dir / fpath.name))
         os.remove(str(arch_path))
         shutil.rmtree(str(self._data_dir / "LJSpeech-1.1"))
-        for path in (self._data_dir / "wavs").iterdir():
-            shutil.move(str(path), str(self._data_dir / "train" / path.name))
+        path_train_wav = self._data_dir / "train"
+        path_train_wav.mkdir(exist_ok=True, parents=True)
+        path_wav = self._data_dir / "wavs"
+        for path in path_wav.iterdir():
+            shutil.move(str(path), str(path_train_wav/path.name))
 
     def load_audio(self, path):
         audio_tensor, sr = torchaudio.load(path)
