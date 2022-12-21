@@ -57,6 +57,7 @@ class Generator(nn.Module):
         ch = config.channels_up
         self.conv1 = weight_norm(nn.Conv1d(80, ch, 7, 1, padding=3))
         self.convT = nn.ModuleList()
+        self.res_block = nn.ModuleList()
         for ks, st in zip(config.kernel_size_convT, config.stride_convT):
             self.convT.append(
                 nn.Sequential(
@@ -64,14 +65,12 @@ class Generator(nn.Module):
                     weight_norm(nn.ConvTranspose1d(ch, ch // 2, ks, st, padding=(ks-st)//2))
                 )
             )
-            ch = ch//2
-        res_bloks = []
-        ch = config.channels_up
-        for ks, d in zip(config.blok_kernel_size, config.blok_dilation):
+            for ks, d in zip(config.blok_kernel_size, config.blok_dilation):
+
+                self.res_bloks.append(GenBlock(ch//2, ks, d))
             ch = ch // 2
-            res_bloks.append(GenBlock(ch, ks, d))
+
         self.conv2 = weight_norm(nn.Conv1d(ch, 1, 7, 1, padding=3))
-        self.res_block = nn.ModuleList(res_bloks)
 
         self.conv1.apply(init_weights)
         self.conv2.apply(init_weights)
@@ -79,15 +78,18 @@ class Generator(nn.Module):
 
     def forward(self, input):
         out = self.conv1(input)
+        i = 0
         for layer in self.convT:
             out = layer(out)
             block_out = None
-            for block in self.res_block:
+            l = len(self.convT)
+            for j in range(l):
                 if block_out is None:
-                    block_out = block(out)
+                    block_out = self.res_block[i*l + j](out)
                 else:
-                    block_out += block(out)
-            out = block_out / len(self.res_block)
+                    block_out += self.res_block[i*l + j](out)
+            out = block_out / l
+            i += 1
         out = F.leaky_relu(out, 0.1)
         out = self.conv2(out)
         out = torch.tanh(out)
