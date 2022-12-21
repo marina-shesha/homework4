@@ -113,8 +113,8 @@ class LJSpeechDataset(torch.utils.data.Dataset):
             trans_path = list(self._data_dir.glob("*.csv"))[0]
             with trans_path.open() as f:
                 for line in f:
-                    w_id = line.split()[0]
-                    w_text = " ".join(line.split()[1:]).strip()
+                    w_id = line.split("|")[0]
+                    w_text = " ".join(line.split("|")[1:]).strip()
                     wav_path = wav_dir / f"{w_id}.wav"
                     t_info = torchaudio.info(str(wav_path))
                     length = t_info.num_frames / t_info.sample_rate
