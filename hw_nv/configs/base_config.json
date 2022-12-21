@@ -9,7 +9,7 @@
     "dataset": {
         "type": "LJSpeechDataset",
         "args": {
-            "part": "trein",
+            "part": "train",
             "max_len": 8192
         }
     },
