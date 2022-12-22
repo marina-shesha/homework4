@@ -52,7 +52,7 @@ def main(config, out_file):
         mel = melspec(wav)
         with torch.no_grad():
             fake_wav = model(mel.to(device)).cpu()
-            torchaudio.save(os.path.join('results', f'fakek{num}'),  fake_wav.squeeze(0), sr)
+            torchaudio.save(os.path.join('results', f'fakek_{num}.wav'),  fake_wav.squeeze(0), sr)
 
     dir = dir_wavs
     for i, name in enumerate(os.listdir(dir)):
