@@ -1,6 +1,5 @@
 # homework4
 
-# TTS project
 
 ## Installation guide
 
