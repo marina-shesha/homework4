@@ -10,7 +10,7 @@ from tqdm import tqdm
 import hw_nv.model as module_model
 from hw_nv.trainer import Trainer
 from hw_nv.utils import ROOT_PATH
-import hw_nv.datasets as data
+import hw_nv.data as data
 from hw_nv.utils.parse_config import ConfigParser
 import audio
 import utils
