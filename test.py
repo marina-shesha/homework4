@@ -12,8 +12,6 @@ from hw_nv.trainer import Trainer
 from hw_nv.utils import ROOT_PATH
 import hw_nv.data as data
 from hw_nv.utils.parse_config import ConfigParser
-import audio
-import utils
 from hw_nv.data.MelSpec import MelSpectrogram
 import torchaudio
 
